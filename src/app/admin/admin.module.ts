@@ -10,8 +10,6 @@ import { DonutSingleComponent } from './containers/donut-single/donut-single.com
 import { DonutCardComponent } from './components/donut-card/donut-card.component';
 import { DonutFormComponent } from './components/donut-form/donut-form.component';
 
-//services
-
 @NgModule({
   declarations: [
     DonutListComponent,
