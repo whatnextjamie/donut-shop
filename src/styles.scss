@@ -40,6 +40,10 @@ label {
   width: 100%;
   font-size: 14px;
 
+  &:hover {
+    cursor: default;
+  }
+
   &:focus {
     border-color: #e3e3e3;
   }
