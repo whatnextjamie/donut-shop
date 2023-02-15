@@ -1,4 +1,4 @@
-<form class="donut-form" (ngSubmit)="handleSubmit(form)" #form="ngForm">
+<form class="donut-form" #form="ngForm">
   <label>
     <span>Name</span>
     <input
@@ -99,7 +99,23 @@
     </ng-container>
   </label>
 
-  <button type="submit" class="btn btn--green">Create</button>
+  <button type="button" class="btn btn--green" (click)="handleCreate(form)">
+    Create
+  </button>
+
+  <button
+    type="button"
+    class="btn btn--green"
+    [disabled]="form.pristine"
+    (click)="handleUpdate(form)"
+  >
+    Update
+  </button>
+
+  <button type="button" class="btn btn--green" (click)="handleDelete()">
+    Delete
+  </button>
+
   <button type="button" class="btn btn--grey" (click)="form.resetForm()">
     Reset Form
   </button>
@@ -107,7 +123,4 @@
   <div *ngIf="form.valid && form.submitted" class="donut-form-working">
     Working...
   </div>
-
-  <pre>{{ donut | json }}</pre>
-  <pre>{{ form.value | json }}</pre>
 </form>
