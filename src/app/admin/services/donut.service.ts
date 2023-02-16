@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+
+import { catchError, map, of, retry, tap, throwError } from 'rxjs';
 
 import { Donut } from '../models/donut.model';
 
@@ -6,79 +9,80 @@ import { Donut } from '../models/donut.model';
   providedIn: 'root',
 })
 export class DonutService {
-  private donuts: Donut[] = [
-    {
-      id: 'y8z0As',
-      name: 'Just Chocolate',
-      icon: 'just-chocolate',
-      price: 119,
-      promo: 'limited',
-      description: 'For the pure chocoholic',
-    },
-    {
-      id: '3u98Kl',
-      name: 'Glazed Fudge',
-      icon: 'glazed-fudge',
-      price: 129,
-      promo: 'new',
-      description: 'Sticky perfection',
-    },
-    {
-      id: 'ae098s',
-      name: 'Caramel Swirl',
-      icon: 'caramel-swirl',
-      price: 129,
-      description: 'Chocolate drizzled with caramel',
-    },
-    {
-      id: '8amkZ9',
-      name: 'Sour Supreme',
-      icon: 'sour-supreme',
-      price: 139,
-      description: 'For the sour advocate',
-    },
-    {
-      id: 'l3M0nz',
-      name: 'Zesty Lemon',
-      icon: 'zesty-lemon',
-      price: 129,
-      description: 'Delicious luscious lemon',
-    },
-  ];
+  private donuts: Donut[] = [];
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   read() {
-    return this.donuts;
+    if (this.donuts.length) {
+      return of(this.donuts);
+    }
+
+    return this.http.get<Donut[]>(`/api/donuts`).pipe(
+      tap((donuts) => {
+        this.donuts = donuts;
+      }),
+      retry({ count: 2, delay: 5000 }),
+      catchError(this.handleError)
+    );
   }
 
   readOne(id: string) {
-    const donut = this.read().find((donut: Donut) => donut.id === id);
+    return this.read().pipe(
+      map((donuts) => {
+        const donut = donuts.find((donut: Donut) => donut.id === id);
 
-    if (donut) {
-      return donut;
-    }
+        if (donut) {
+          return donut;
+        }
 
-    return { name: '', icon: '', price: 0, description: '' };
+        return { name: '', icon: '', price: 0, description: '' };
+      })
+    );
   }
 
   create(payload: Donut) {
-    this.donuts = [...this.donuts, payload];
-    console.log(this.donuts);
+    return this.http.post<Donut>(`/api/donuts`, payload).pipe(
+      tap((donut) => {
+        this.donuts = [...this.donuts, donut];
+      }),
+      catchError(this.handleError)
+    );
   }
 
   update(payload: Donut) {
-    this.donuts = this.donuts.map((donut: Donut) => {
-      if (donut.id === payload.id) {
-        return payload;
-      }
-      return donut;
-    });
-    console.log(this.donuts);
+    return this.http.put<Donut>(`/api/donuts/${payload.id}`, payload).pipe(
+      tap((donut) => {
+        this.donuts = this.donuts.map((item: Donut) => {
+          if (item.id === donut.id) {
+            return donut;
+          }
+          return item;
+        });
+      }),
+      catchError(this.handleError)
+    );
   }
 
   delete(payload: Donut) {
-    this.donuts = this.donuts.filter((donut: Donut) => donut.id !== payload.id);
-    console.log(this.donuts);
+    return this.http.delete<Donut>(`/api/donuts/${payload.id}`).pipe(
+      tap(() => {
+        this.donuts = this.donuts.filter(
+          (donut: Donut) => donut.id !== payload.id
+        );
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  private handleError(err: HttpErrorResponse) {
+    if (err.error instanceof ErrorEvent) {
+      // client-side
+      console.warn('Client', err.message);
+    } else {
+      // server-side
+      console.warn('Server', err.status);
+    }
+    return throwError(() => new Error(err.message));
   }
 }
