@@ -1,4 +1,8 @@
-<div [ngClass]="{ 'donut-card-promo': donut.promo }" class="donut-card">
+<a
+  [routerLink]="donut.id"
+  [ngClass]="{ 'donut-card-promo': donut.promo }"
+  class="donut-card"
+>
   <img
     src="assets/img/{{ donut.icon }}.svg"
     [alt]="donut.icon"
@@ -14,4 +18,4 @@
     </p>
     <p class="donut-card-price">{{ donut.price / 100 | currency }}</p>
   </div>
-</div>
+</a>
