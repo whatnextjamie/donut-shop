@@ -28,7 +28,7 @@
       "name": "Sour Supreme",
       "icon": "sour-supreme",
       "price": 149,
-      "promo": "new",
+      "promo": "limited",
       "description": "For the sour advocate"
     },
     {
@@ -37,6 +37,21 @@
       "icon": "zesty-lemon",
       "price": 129,
       "description": "Delicious luscious lemon"
+    },
+    {
+      "id": "KJVXEW1",
+      "name": "Strawberry Glaze",
+      "icon": "strawberry-glaze",
+      "price": 139,
+      "promo": "new",
+      "description": "Fruity perfection"
+    },
+    {
+      "id": "Ka0EeNM",
+      "name": "Vanilla Sundae",
+      "icon": "vanilla-sundae",
+      "price": 129,
+      "description": "Not your average vanilla"
     }
   ]
 }

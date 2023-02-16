@@ -99,24 +99,40 @@
     </ng-container>
   </label>
 
-  <button type="button" class="btn btn--green" (click)="handleCreate(form)">
+  <button
+    *ngIf="!isEdit"
+    (click)="handleCreate(form)"
+    type="button"
+    class="btn btn--green"
+  >
     Create
   </button>
 
   <button
+    *ngIf="isEdit"
+    (click)="handleUpdate(form)"
+    [disabled]="form.pristine"
     type="button"
     class="btn btn--green"
-    [disabled]="form.pristine"
-    (click)="handleUpdate(form)"
   >
     Update
   </button>
 
-  <button type="button" class="btn btn--green" (click)="handleDelete()">
+  <button
+    *ngIf="isEdit"
+    (click)="handleDelete()"
+    type="button"
+    class="btn btn--green"
+  >
     Delete
   </button>
 
-  <button type="button" class="btn btn--grey" (click)="form.resetForm()">
+  <button
+    *ngIf="form.touched || isEdit"
+    (click)="form.resetForm()"
+    type="button"
+    class="btn btn--grey"
+  >
     Reset Form
   </button>
 
